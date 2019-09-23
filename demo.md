@@ -28,4 +28,8 @@ export PATH=$PATH:/usr/local/sbin
 前台运行rabbitmq-server
 后台运行brew service start rabbitmq
 
+Mac doc
+https://www.rabbitmq.com/install-homebrew.html
+
+默认账号密码 guest
 ```
