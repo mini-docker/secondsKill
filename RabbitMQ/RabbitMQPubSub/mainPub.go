@@ -1,10 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"secondsKill/RabbitMQ"
 	"strconv"
 	"time"
-	"fmt"
 )
 
 func main() {

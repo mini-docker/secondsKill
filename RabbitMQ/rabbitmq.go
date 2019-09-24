@@ -1,9 +1,9 @@
 package RabbitMQ
 
 import (
+	"fmt"
 	"github.com/streadway/amqp"
 	"log"
-	"fmt"
 )
 
 // url格式 amqp://账号：密码@rabbitmq服务器地址：端口号/vhost
@@ -22,15 +22,15 @@ type RabbitMQ struct {
 // 创建RabbitMQ结构体实例
 func NewRabbitMQ(queueName string, exchange string, key string) *RabbitMQ {
 	rabbitmq := &RabbitMQ{
-		QueueName:queueName,
-		Exchange: exchange,
-		Key: key,
-		Mqurl: MQURL,
+		QueueName: queueName,
+		Exchange:  exchange,
+		Key:       key,
+		Mqurl:     MQURL,
 	}
 	var err error
-	rabbitmq.conn,err = amqp.Dial(rabbitmq.Mqurl)
+	rabbitmq.conn, err = amqp.Dial(rabbitmq.Mqurl)
 	rabbitmq.failOnErr(err, "创建连接错误")
-	rabbitmq.channel,err = rabbitmq.conn.Channel()
+	rabbitmq.channel, err = rabbitmq.conn.Channel()
 	rabbitmq.failOnErr(err, "获取channel失败")
 	return rabbitmq
 }
@@ -43,16 +43,15 @@ func (r *RabbitMQ) Destory() {
 
 // 错误处理函数
 func (r *RabbitMQ) failOnErr(err error, message string) {
-	if err !=nil{
-		log.Fatalf("%s:%s", message,err)
-		panic(fmt.Sprintf("%s:%s",message,err))
+	if err != nil {
+		log.Fatalf("%s:%s", message, err)
+		panic(fmt.Sprintf("%s:%s", message, err))
 	}
 }
 
-
 // 简单模式step： 1，创建简单模式下rabbitMQ实例
 func NewRabbitMQSimple(queueName string) *RabbitMQ {
-	rabbitmq:= NewRabbitMQ(queueName, "", "")
+	rabbitmq := NewRabbitMQ(queueName, "", "")
 	return rabbitmq
 }
 
@@ -62,13 +61,13 @@ func (r *RabbitMQ) PublishSimple(message string) {
 	// 保证队里存在，消息能发送到队列中
 	_, err := r.channel.QueueDeclare(
 		r.QueueName,
-		false,//是否持久化
-		false,//是否为自动删除
-		false,//是否具有排他性
-		false,//是否阻塞
-		nil,////额外属性
+		false, //是否持久化
+		false, //是否为自动删除
+		false, //是否具有排他性
+		false, //是否阻塞
+		nil,   ////额外属性
 	)
-	if err!=nil {
+	if err != nil {
 		fmt.Println(err)
 	}
 
@@ -81,13 +80,13 @@ func (r *RabbitMQ) PublishSimple(message string) {
 		false,
 		amqp.Publishing{
 			ContentEncoding: "text/plain",
-			Body:[]byte(message),
+			Body:            []byte(message),
 		})
 
 }
 
 //simple 模式下消费者
-func (r *RabbitMQ) ConsumeSimple(){
+func (r *RabbitMQ) ConsumeSimple() {
 	_, err := r.channel.QueueDeclare(
 		r.QueueName,
 		false,
@@ -100,7 +99,7 @@ func (r *RabbitMQ) ConsumeSimple(){
 		fmt.Println(err)
 	}
 	// 接收消息
-	msgs,err := r.channel.Consume(
+	msgs, err := r.channel.Consume(
 		r.QueueName,
 		"",
 		true,
@@ -108,7 +107,6 @@ func (r *RabbitMQ) ConsumeSimple(){
 		false,
 		false,
 		nil,
-
 	)
 	if err != nil {
 		fmt.Println(err)
@@ -132,17 +130,16 @@ func (r *RabbitMQ) ConsumeSimple(){
 //订阅模式创建RabbitMQ实例
 func NewRabbitMQPubSub(exchangeName string) *RabbitMQ {
 	//创建RabbitMQ实例
-	rabbitmq := NewRabbitMQ("",exchangeName,"")
+	rabbitmq := NewRabbitMQ("", exchangeName, "")
 	var err error
 	//获取connection
 	rabbitmq.conn, err = amqp.Dial(rabbitmq.Mqurl)
-	rabbitmq.failOnErr(err,"failed to connect rabbitmq!")
+	rabbitmq.failOnErr(err, "failed to connect rabbitmq!")
 	//获取channel
 	rabbitmq.channel, err = rabbitmq.conn.Channel()
 	rabbitmq.failOnErr(err, "failed to open a channel")
 	return rabbitmq
 }
-
 
 //订阅模式生产
 func (r *RabbitMQ) PublishPub(message string) {
@@ -234,13 +231,13 @@ func (r *RabbitMQ) RecieveSub() {
 
 //路由模式
 //创建RabbitMQ实例
-func NewRabbitMQRouting(exchangeName string,routingKey string) *RabbitMQ {
+func NewRabbitMQRouting(exchangeName string, routingKey string) *RabbitMQ {
 	//创建RabbitMQ实例
-	rabbitmq := NewRabbitMQ("",exchangeName,routingKey)
+	rabbitmq := NewRabbitMQ("", exchangeName, routingKey)
 	var err error
 	//获取connection
 	rabbitmq.conn, err = amqp.Dial(rabbitmq.Mqurl)
-	rabbitmq.failOnErr(err,"failed to connect rabbitmq!")
+	rabbitmq.failOnErr(err, "failed to connect rabbitmq!")
 	//获取channel
 	rabbitmq.channel, err = rabbitmq.conn.Channel()
 	rabbitmq.failOnErr(err, "failed to open a channel")
@@ -248,7 +245,7 @@ func NewRabbitMQRouting(exchangeName string,routingKey string) *RabbitMQ {
 }
 
 //路由模式发送消息
-func (r *RabbitMQ) PublishRouting(message string )  {
+func (r *RabbitMQ) PublishRouting(message string) {
 	//1.尝试创建交换机
 	err := r.channel.ExchangeDeclare(
 		r.Exchange,
@@ -276,6 +273,7 @@ func (r *RabbitMQ) PublishRouting(message string )  {
 			Body:        []byte(message),
 		})
 }
+
 //路由模式接受消息
 func (r *RabbitMQ) RecieveRouting() {
 	//1.试探性创建交换机
@@ -334,23 +332,23 @@ func (r *RabbitMQ) RecieveRouting() {
 	<-forever
 }
 
-
 //话题模式
 //创建RabbitMQ实例
-func NewRabbitMQTopic(exchangeName string,routingKey string) *RabbitMQ {
+func NewRabbitMQTopic(exchangeName string, routingKey string) *RabbitMQ {
 	//创建RabbitMQ实例
-	rabbitmq := NewRabbitMQ("",exchangeName,routingKey)
+	rabbitmq := NewRabbitMQ("", exchangeName, routingKey)
 	var err error
 	//获取connection
 	rabbitmq.conn, err = amqp.Dial(rabbitmq.Mqurl)
-	rabbitmq.failOnErr(err,"failed to connect rabbitmq!")
+	rabbitmq.failOnErr(err, "failed to connect rabbitmq!")
 	//获取channel
 	rabbitmq.channel, err = rabbitmq.conn.Channel()
 	rabbitmq.failOnErr(err, "failed to open a channel")
 	return rabbitmq
 }
+
 //话题模式发送消息
-func (r *RabbitMQ) PublishTopic(message string )  {
+func (r *RabbitMQ) PublishTopic(message string) {
 	//1.尝试创建交换机
 	err := r.channel.ExchangeDeclare(
 		r.Exchange,
@@ -378,6 +376,7 @@ func (r *RabbitMQ) PublishTopic(message string )  {
 			Body:        []byte(message),
 		})
 }
+
 //话题模式接受消息
 //要注意key,规则
 //其中“*”用于匹配一个单词，“#”用于匹配多个单词（可以是零个）
@@ -438,14 +437,3 @@ func (r *RabbitMQ) RecieveTopic() {
 	fmt.Println("退出请按 CTRL+C\n")
 	<-forever
 }
-
-
-
-
-
-
-
-
-
-
-

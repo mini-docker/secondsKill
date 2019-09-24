@@ -7,10 +7,9 @@ import (
 )
 
 type MovieController struct {
-
 }
 
-func (c *MovieController) Get() mvc.View{
+func (c *MovieController) Get() mvc.View {
 
 	movieRepository := repositories.NewMovieManager()
 	movieService := services.NewMovieServiceManger(movieRepository)
@@ -21,4 +20,3 @@ func (c *MovieController) Get() mvc.View{
 	}
 
 }
-

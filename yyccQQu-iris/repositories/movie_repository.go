@@ -7,15 +7,14 @@ type MovieRepository interface {
 }
 
 type MovieManager struct {
-
 }
 
-func NewMovieManager() MovieRepository  {
+func NewMovieManager() MovieRepository {
 	return &MovieManager{}
 }
 
-func (m *MovieManager) GetMovieName() string  {
+func (m *MovieManager) GetMovieName() string {
 	//模拟赋值给模型
-	movie:=&datamodels.Movie{Name:"newbee"}
+	movie := &datamodels.Movie{Name: "newbee"}
 	return movie.Name
 }
