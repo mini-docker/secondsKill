@@ -3,9 +3,9 @@ package controllers
 import (
 	"github.com/kataras/iris"
 	"github.com/kataras/iris/mvc"
-	"secondsKill/src/imooc-product/common"
-	"secondsKill/src/imooc-product/datamodels"
-	"secondsKill/src/imooc-product/services"
+	"secondsKill/imooc-product/common"
+	"secondsKill/imooc-product/datamodels"
+	"secondsKill/imooc-product/services"
 	"strconv"
 )
 

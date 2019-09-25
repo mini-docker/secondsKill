@@ -1,8 +1,8 @@
 package services
 
 import (
-	"secondsKill/src/imooc-product/datamodels"
-	"secondsKill/src/imooc-product/repositories"
+	"secondsKill/imooc-product/datamodels"
+	"secondsKill/imooc-product/repositories"
 )
 
 type IProductService interface {

@@ -2,8 +2,8 @@ package repositories
 
 import (
 	"database/sql"
-	"secondsKill/src/imooc-product/common"
-	"secondsKill/src/imooc-product/datamodels"
+	"secondsKill/imooc-product/common"
+	"secondsKill/imooc-product/datamodels"
 	"strconv"
 )
 

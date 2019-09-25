@@ -5,10 +5,10 @@ import (
 	"github.com/kataras/iris"
 	"github.com/kataras/iris/mvc"
 	"github.com/opentracing/opentracing-go/log"
-	"secondsKill/src/imooc-product/backend/web/controllers"
-	"secondsKill/src/imooc-product/common"
-	"secondsKill/src/imooc-product/repositories"
-	"secondsKill/src/imooc-product/services"
+	"secondsKill/imooc-product/backend/web/controllers"
+	"secondsKill/imooc-product/common"
+	"secondsKill/imooc-product/repositories"
+	"secondsKill/imooc-product/services"
 )
 
 func main() {
@@ -17,15 +17,15 @@ func main() {
 	//2.设置错误模式，在mvc模式下提示错误
 	app.Logger().SetLevel("debug")
 	//3.注册模板
-	tmplate := iris.HTML("/secondsKill/src/imooc-product/backend/web/views", ".html").Layout("/shared/layout.html").Reload(true)
+	tmplate := iris.HTML("./backend/web/views", ".html").Layout("shared/layout.html").Reload(true)
 	app.RegisterView(tmplate)
 	//4.设置模板目标
-	app.StaticWeb("secondsKill/src/imooc-product/assets", "secondsKill/src/imooc-product/backend/web/assets")
+	app.StaticWeb("/assets", "./backend/web/assets")
 	//出现异常跳转到指定页面
 	app.OnAnyErrorCode(func(ctx iris.Context) {
 		ctx.ViewData("message", ctx.Values().GetStringDefault("message", "访问的页面出错！"))
 		ctx.ViewLayout("")
-		ctx.View("secondsKill/src/imooc-product/shared/error.html")
+		ctx.View("shared/error.html")
 	})
 	//连接数据库
 	db, err := common.NewMysqlConn()
