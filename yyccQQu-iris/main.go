@@ -13,7 +13,7 @@ func main() {
 	//注册控制器
 	mvc.New(app.Party("/hello")).Handle(new(controllers.MovieController))
 	app.Run(
-		iris.Addr("localhost:8080"),
+		iris.Addr("localhost:8081"),
 	)
 
 }
