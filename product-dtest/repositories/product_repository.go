@@ -2,6 +2,7 @@ package repositories
 
 import (
 	"database/sql"
+	"fmt"
 	"secondsKill/product-dtest/common"
 	"secondsKill/product-dtest/datamodels"
 	"strconv"
@@ -33,6 +34,7 @@ func NewProductManager(table string,db *sql.DB) IProduct{
 func (p *ProductManager) Conn()(err error) {
 	if p.mysqlConn == nil {
 		mysql,err := common.NewMysqlConn()
+		defer mysql.Close()
 		if err != nil {
 			return  err
 		}
@@ -51,14 +53,19 @@ func (p *ProductManager) Insert(product *datamodels.Product)(productId int64, er
 	if err=p.Conn();err!=nil{
 		return
 	}
-	// 2.准备sql
-	sql:="INSERT product SET productName=?,productNum=?,productImage=?,productUrl=?"
+	/*// 2.准备sql
+	sql :="INSERT product SET productName=?,productNum=?,productImage=?,productUrl=?"
 	stmt,errSql := p.mysqlConn.Prepare(sql)
 	if err != nil{
 		return 0,errSql
 	}
 	//3. 传入参数
 	result,err := stmt.Exec(product.ProductName,product.ProductNum,product.ProductImage,product.ProductUrl)
+	if err != nil{
+		return 0,err
+	}*/
+	sql :="INSERT INTO product (productName,productNum,productImage,productUrl) values('%s',%d,'%s','%s')"
+	result,err :=p.mysqlConn.Exec(fmt.Sprintf(sql,product.ProductName,product.ProductNum,product.ProductImage,product.ProductUrl))
 	if err != nil{
 		return 0,err
 	}
@@ -128,13 +135,19 @@ func (p *ProductManager) SelectAll() (productArray []*datamodels.Product, errPro
 	if err := p.Conn(); err != nil {
 		return nil, err
 	}
+	fmt.Println(p.table,"-----")
 	sql := "Select * from " + p.table
-	rows, err := p.mysqlConn.Query(sql)
+	/*rows, err := p.mysqlConn.Query(sql)
 	defer rows.Close()
 	if err != nil {
 		return nil, err
-	}
+	}*/
 
+	rows,err := p.mysqlConn.Query(sql)
+	if err != nil {
+		return nil, err
+	}
+	fmt.Println(rows,"rowsf")
 	result := common.GetResultRows(rows)
 	if len(result) == 0 {
 		return nil, nil

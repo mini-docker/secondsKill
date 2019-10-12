@@ -1,8 +1,14 @@
 package main
 
 import (
+	"context"
 	"github.com/kataras/iris"
-
+	"github.com/kataras/iris/mvc"
+	"github.com/opentracing/opentracing-go/log"
+	"secondsKill/product-dtest/backend/web/controllers"
+	"secondsKill/product-dtest/common"
+	"secondsKill/product-dtest/repositories"
+	"secondsKill/product-dtest/services"
 )
 
 func main() {
@@ -22,20 +28,20 @@ func main() {
 		ctx.View("shared/error.html")
 	})
 	//连接数据库
-	//db, err := common.NewMysqlConn()
-	//if err != nil {
-	//	log.Error(err)
-	//}
-	//ctx, cancel := context.WithCancel(context.Background())
-	//defer cancel()
+	db, err := common.NewMysqlConn()
+	if err != nil {
+		log.Error(err)
+	}
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
 	//
 	////5.注册控制器
-	//productRepository := repositories.NewProductManager("product", db)
-	//productSerivce := services.NewProductService(productRepository)
-	//productParty := app.Party("/product")
-	//product := mvc.New(productParty)
-	//product.Register(ctx, productSerivce)
-	//product.Handle(new(controllers.ProductController))
+	productRepository := repositories.NewProductManager("product", db)
+	productSerivce := services.NewProductService(productRepository)
+	productParty := app.Party("/product")
+	product := mvc.New(productParty)
+	product.Register(ctx, productSerivce)
+	product.Handle(new(controllers.ProductController))
 
 	//6.启动服务
 	app.Run(
