@@ -2,6 +2,7 @@ package common
 
 import (
 	"database/sql"
+	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -24,6 +25,7 @@ func GetResultRow(rows *sql.Rows) map[string]string {
 		//将行数据保存到record字典
 		rows.Scan(scanArgs...)
 		for i, v := range values {
+			fmt.Println(i,v)
 			if v != nil {
 				//fmt.Println(reflect.TypeOf(col))
 				record[columns[i]] = string(v.([]byte))

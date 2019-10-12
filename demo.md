@@ -40,6 +40,12 @@ https://www.rabbitmq.com/install-homebrew.html
 框架文档： https://github.com/iris-contrib/examples
 
 ```
+### goland 快捷键
+```
+go tools gofmt: 格式优化 option+cmd+shift+f
+
+
+```
 
 
 
