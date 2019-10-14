@@ -38,8 +38,13 @@ https://www.rabbitmq.com/install-homebrew.html
 ```
 官网： https://iris-go.com/
 框架文档： https://github.com/iris-contrib/examples
-
+1.model
+2.repositories
+3.services
+4.controllers
+5.views
 ```
+
 ### goland 快捷键
 ```
 go tools gofmt: 格式优化 option+cmd+shift+f
