@@ -56,7 +56,8 @@ func (o *OrderMangerRepository) Insert(order *datamodels.Order) (productID int64
 	//	return productID,errResult
 	//}
 	//return result.LastInsertId()
-	sql :="INSERT INTO product (userID,productID,orderStatus) values(%d,%d,%d)"
+	fmt.Println(order.UserId,order.ProductId,order.OrderStatus,"orderssss")
+	sql :="INSERT INTO `order` (userID,productID,orderStatus) values(%d,%d,%d)"
 	result,err :=o.mysqlConn.Exec(fmt.Sprintf(sql,order.UserId,order.ProductId,order.OrderStatus))
 	if err != nil{
 		return 0,err

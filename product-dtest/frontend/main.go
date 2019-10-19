@@ -5,6 +5,7 @@ import (
 	"github.com/kataras/iris"
 	"github.com/kataras/iris/mvc"
 	"secondsKill/product-dtest/common"
+	"secondsKill/product-dtest/frontend/middleware"
 	"secondsKill/product-dtest/frontend/web/controllers"
 	"secondsKill/product-dtest/repositories"
 	"secondsKill/product-dtest/services"
@@ -47,6 +48,17 @@ func main() {
 	userPro := mvc.New(app.Party("/user"))
 	userPro.Register(userService, ctx,sess.Start)
 	userPro.Handle(new(controllers.UserController))
+
+	//注册product控制器
+	product := repositories.NewProductManager("product",db)
+	productService := services.NewProductService(product)
+	order:= repositories.NewOrderMangerRepository("order",db)
+	orderService:=services.NewOrderService(order)
+	proProduct:=app.Party("/product")
+	pro:=mvc.New(proProduct)
+	proProduct.Use(middleware.AuthConProduct)
+	pro.Register(productService,orderService,sess.Start)
+	pro.Handle(new(controllers.ProductController))
 
 	app.Run(
 		iris.Addr("0.0.0.0:8082"),
