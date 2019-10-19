@@ -25,7 +25,32 @@ func GetResultRow(rows *sql.Rows) map[string]string {
 		//将行数据保存到record字典
 		rows.Scan(scanArgs...)
 		for i, v := range values {
-			fmt.Println(i,v)
+			fmt.Println(i,v,"iv-------")
+			if v != nil {
+				//fmt.Println(reflect.TypeOf(col))
+				record[columns[i]] = string(v.([]byte))
+				//record[columns[i]] = v
+			}
+		}
+	}
+	return record
+}
+func GetResultRow2(rows *sql.Rows) map[string]string {
+	columns, _ := rows.Columns()
+	scanArgs := make([]interface{}, len(columns))
+	values := make([]interface{}, len(columns))
+	for j := range values {
+		scanArgs[j] = &values[j]
+	}
+	record := make(map[string]string)
+	for rows.Next() {
+		//将行数据保存到record字典
+		rows.Scan(scanArgs...)
+		for i, v := range values {
+			if i==0 {
+				continue
+			}
+			fmt.Println(i,v,"iv-------")
 			if v != nil {
 				//fmt.Println(reflect.TypeOf(col))
 				record[columns[i]] = string(v.([]byte))
