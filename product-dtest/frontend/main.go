@@ -7,10 +7,9 @@ import (
 	"secondsKill/product-dtest/common"
 	"secondsKill/product-dtest/frontend/middleware"
 	"secondsKill/product-dtest/frontend/web/controllers"
+	"secondsKill/product-dtest/rabbitmq"
 	"secondsKill/product-dtest/repositories"
 	"secondsKill/product-dtest/services"
-	"github.com/kataras/iris/sessions"
-	"time"
 )
 
 func main() {
@@ -36,18 +35,17 @@ func main() {
 	if err != nil {
 
 	}
-	sess := sessions.New(sessions.Config{
-		Cookie:"AdminCookie",
-		Expires:600*time.Minute,
-	})
+
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
 	user := repositories.NewUserRepository("user",db)
 	userService := services.NewService(user)
 	userPro := mvc.New(app.Party("/user"))
-	userPro.Register(userService, ctx,sess.Start)
+	userPro.Register(userService, ctx)
 	userPro.Handle(new(controllers.UserController))
+
+	rabbitmq:=rabbitmq.NewRabbitMQSimple("yyccQQuProduct")
 
 	//注册product控制器
 	product := repositories.NewProductManager("product",db)
@@ -57,7 +55,7 @@ func main() {
 	proProduct:=app.Party("/product")
 	pro:=mvc.New(proProduct)
 	proProduct.Use(middleware.AuthConProduct)
-	pro.Register(productService,orderService,sess.Start)
+	pro.Register(productService,orderService,rabbitmq)
 	pro.Handle(new(controllers.ProductController))
 
 	app.Run(
