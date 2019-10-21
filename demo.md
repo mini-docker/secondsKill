@@ -52,6 +52,11 @@ go tools gofmt: 格式优化 option+cmd+shift+f
 
 ```
 
+### cookie 和 session 的 区别
+- cookie数据存放在客户的浏览器上，session数据放在服务器上
+- session保存在服务器上，当访问增多，会占用比较大的资源
+- 单个cookie保存的数据不能超过4k
+
 
 
 
