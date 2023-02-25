@@ -26,5 +26,5 @@ require (
 	github.com/ryanuber/columnize v2.1.0+incompatible // indirect
 	github.com/shurcooL/sanitized_anchor_name v1.0.0 // indirect
 	github.com/streadway/amqp v0.0.0-20190827072141-edfb9018d271
-	golang.org/x/crypto v0.0.0-20190923035154-9ee001bba392
+	golang.org/x/crypto v0.1.0
 )
